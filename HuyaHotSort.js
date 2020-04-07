@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         虎牙弹幕屏蔽及热度排序
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  弹幕屏蔽关键词（在原屏蔽按钮后面）,直播页面按热度排序。
 // @author       Hugo16
 // @match        www.huya.com/*
@@ -95,24 +95,10 @@ function compareStr(str,strArr){
 
 // 读取屏蔽词
 function readBlockWords(){
-    var cookieIndex = document.cookie.indexOf('huyaBlock=')
     var words = [];
     // 读取屏蔽词
-    if (cookieIndex>-1) {
-        var star = document.cookie.indexOf('huyaBlock=')+10;
-        var temp;
-        if(document.cookie.indexOf(";",star)>-1){
-            temp = document.cookie.slice(star, (document.cookie.indexOf(";",star)));
-        }
-        else{
-            temp = document.cookie.slice(star);
-        }
-        if(temp!=""){
-            words = temp.split(',');
-        }
-    }
-    else {
-        document.cookie = 'huyaBlock=';
+    if(localStorage.getItem("huyaBlock")!=null){
+        words = localStorage.getItem("huyaBlock").split(',')
     }
     for(var i=0;i<words.length;i++){
         $("#wordsWrap ul").append("<li><span class='keyWords'>"+words[i]+"</span><span class='cancelBtn'>取消屏蔽<span></li>");
@@ -123,7 +109,7 @@ function readBlockWords(){
 // 写入屏蔽词
 function writeBlockWords(blockWords){
     var words = blockWords.join(",");
-    document.cookie = "huyaBlock="+words;
+    window.localStorage.setItem('huyaBlock',words)
 }
 
 // 热度排序
